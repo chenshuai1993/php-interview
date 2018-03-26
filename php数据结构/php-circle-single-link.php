@@ -89,7 +89,7 @@ class singleLink
     {
        $_end = $this->_getEnd();
 
-       return $_end == $node;
+       return $_end === $node;
     }
 
 
@@ -128,8 +128,15 @@ class singleLink
         $curr = $this->head;
         while ($curr->id != null){
 
-            if($curr->next->id == $index){
-
+            //删除头元素
+            if($curr->id == $index){
+                $this->head = new node();
+                $this->head->next = $this->head;
+                $this->size = 0;
+                $flag = false;
+                break;
+            }elseif($curr->next->id == $index){
+                //只能删除非 头尾元素
                 $curr->next = $curr->next->next; //当前元素的下一个元素 指向 孙辈元素
                 $this->size--;
                 $flag = true;
@@ -211,7 +218,7 @@ $list->add($node1)->add($node2)->add($node3)->add($node4);
 
 
 #删除
-#$list->del(3);
+$list->del(1);
 #$list->del(2);
 
 #改
@@ -226,7 +233,7 @@ $list->add($node1)->add($node2)->add($node3)->add($node4);
 #判断是不是链表最后
 #var_dump($list->isEnd($node1));
 
-#print_r($list);
+print_r($list);
 
 
 
