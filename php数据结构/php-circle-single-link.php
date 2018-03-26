@@ -6,7 +6,7 @@
  * Time: 下午8:19
  */
 
-##单链表 头插示例
+##循环单链表 头插示例
 
 #节点对象
 class node
@@ -15,7 +15,7 @@ class node
     public $data;
     public $next = null;
 
-    public function __construct($index,$value)
+    public function __construct($index='',$value='')
     {
         $this->id  = $index;
         $this->data= $value;
@@ -47,6 +47,10 @@ class singleLink
 
             $this->head = $node;
 
+            #todo 循环单链表
+            $node->next = $this->head;
+
+
         } elseif ($preNodeId == 0) {
 
             //如果不是空链表 并且没有指定前置节点id,默认的话,链表头插
@@ -74,6 +78,43 @@ class singleLink
 
         return $this;
     }
+
+
+    /**
+     * @param $index
+     * @return bool
+     * 判断循环单链表，改节点是不是最后一个元素
+     */
+    public function isEnd(node $node)
+    {
+       $_end = $this->_getEnd();
+
+       return $_end == $node;
+    }
+
+
+    /**
+     * @return mixed
+     * 获取循环单链表最后一个数据
+     */
+    private function _getEnd()
+    {
+        $curr = $this->head;
+        $size = $this->size;
+        $_size = 0;
+
+        while (1){
+            if($_size == $size){
+                return $curr;
+            }
+
+            $_size++;
+            $curr = $curr->next;
+        }
+
+
+    }
+
 
     /**
      * @删除单链表元素
@@ -126,6 +167,7 @@ class singleLink
 
     }
 
+
     /**
      * @编辑单链表
      * @param $index
@@ -150,7 +192,6 @@ class singleLink
     }
 
 
-
 }
 
 //node  index,data
@@ -160,12 +201,12 @@ $node2 = new node(2,'liuxue');
 $node3 = new node(3,'shanshan');
 $node4 = new node(4,'shanshan4');
 
-
-
 $list = new singleLink();
 
 
 #增加
+#$list->add($node1);
+#$list->add($node1)->add($node2);
 $list->add($node1)->add($node2)->add($node3)->add($node4);
 
 
@@ -181,4 +222,12 @@ $list->add($node1)->add($node2)->add($node3)->add($node4);
 
 #print_r($node1);
 #print_r($node2);
-print_r($list);
+
+#判断是不是链表最后
+#var_dump($list->isEnd($node1));
+
+#print_r($list);
+
+
+
+
