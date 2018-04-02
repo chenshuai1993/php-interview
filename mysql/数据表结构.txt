@@ -1,0 +1,306 @@
+5.1.1演员表
+该actor表列出了所有参与者的信息。
+
+该actor表被连接到 film 由所述的装置表 film_actor 的表。
+
+列
+actor_id：用于唯一标识表中每个角色的代理主键。
+
+first_name：演员的名字。
+
+last_name：演员的姓氏。
+
+last_update：行创建或最近更新的时间。
+
+
+5.1.2地址表
+该address表包含客户，员工和商店的地址信息。
+
+该address表的主键显示为外键 customer， staff和 store 表。
+
+列
+address_id：代理主键，用于唯一标识表中的每个地址。
+
+address：地址的第一行。
+
+address2：地址的可选第二行。
+
+district：地址的区域，这可能是州，省，州等。
+
+city_id：指向city 表的外键 。
+
+postal_code：地址的邮政编码或邮政编码（如适用）。
+
+phone：地址的电话号码。
+
+last_update：行创建或最近更新的时间。
+
+location：具有空间索引的几何列。
+
+
+
+
+5.1.3类别表
+该category表列出了可以分配给电影的类别。
+
+类别表film 通过 表格连接到 film_category 表格。
+
+列
+category_id：用于唯一标识表中每个类别的代理主键。
+
+name：类别的名称。
+
+last_update：行创建或最近更新的时间。
+
+
+5.1.4城市表
+该city表格包含城市列表。
+
+该city表由 表中的外键address 引用，并country使用外键引用该 表。
+
+列
+city_id：用于唯一标识表格中每个城市的代理主键。
+
+city：城市的名字。
+
+country_id：标识城市所属国家的外键。
+
+last_update：行创建或最近更新的时间。
+
+
+5.1.5国家表
+该country表包含一个国家列表。
+
+该country表由表中的外键引用 city 。
+
+列
+country_id：用于唯一标识表格中每个国家/地区的代理主键。
+
+country：国家的名字。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.6客户表
+该customer表包含所有客户的列表。
+
+该customer表是在称为 payment 和 rental 表和指 address 和 store 表使用外键。
+
+列
+customer_id：代理主键，用于唯一标识表中的每个客户。
+
+store_id：识别顾客的“ 家庭商店 ”的外键。“客户不仅限于从这家商店租赁，但这是他们通常购物的商店。
+
+first_name：客户的名字。
+
+last_name：客户的姓氏。
+
+email：客户的电子邮件地址。
+
+address_id：在address 表格中标识客户地址的外键 。
+
+active：表示客户是否为活跃客户。将其设置 FALSE为删除客户的替代选项。大多数查询应该有一个 WHERE active = TRUE条款。
+
+create_date：客户被添加到系统的日期。此日期是在一次使用触发器时自动设置的INSERT。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.7电影表
+该film表是商店中潜在存货的所有电影的列表。inventory 表中列出了每部电影的实际存货副本 。
+
+该film表指的是 language 表，并且由称为 film_category， film_actor和 inventory 表。
+
+列
+film_id：用于唯一标识表中每部影片的代理主键。
+
+title：电影的标题。
+
+description：电影的简短描述或情节总结。
+
+release_year：电影发行的一年。
+
+language_id：指向language 表格的外键 ; 确定电影的语言。
+
+original_language_id：指向language 表格的外键 ; 确定电影的原始语言。当电影被配音成新语言时使用。
+
+rental_duration：租期的长度，以天为单位。
+
+rental_rate：在rental_duration列中指定的时间内租用电影的成本 。
+
+length：电影的持续时间，以分钟为单位。
+
+replacement_cost：如果电影没有退回或者在损坏状态下退回，则收取给客户的金额。
+
+rating：分配给电影的评分。可以是一个：G， PG，PG-13， R，或NC-17。
+
+special_features：列出DVD中包含哪些常见的特殊功能。可以是零或多种：Trailers， Commentaries，Deleted Scenes，Behind the Scenes。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.8 film_actor表
+该film_actor表用于支持电影和演员之间的多对多关系。对于某部电影中的每个演员，film_actor表格中将会有一行 列出演员和电影。
+
+该film_actor表引用了 使用外键的表 film 和 actor表。
+
+列：
+actor_id：标识演员的外键。
+
+film_id：识别电影的外键。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.9 film_category表
+该film_category表格用于支持电影和类别之间的多对多关系。对于应用于电影的每个类别，film_category表格中将会有一行 列出类别和电影。
+
+该film_category表引用了 使用外键的表 film 和 category表。
+
+列：
+film_id：识别电影的外键。
+
+category_id：标识类别的外键。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.10 film_text表
+该film_text表中包含的 film_id，title并且 description该列 film表，用表的内容保持同步与film通过触发器来表film表的 INSERT，UPDATE和 DELETE行动（见 第5.5节“触发器”）。
+
+在MySQL服务器5.6.10之前，该film_text 表是Sakila示例数据库中使用MyISAM存储引擎的唯一表。这是因为全文搜索用于电影 表中列出的电影的标题和描述 。使用MyISAM是因为InnoDB的全文搜索支持在MySQL服务器5.6.10之前不可用。
+
+列
+film_id：用于唯一标识表中每部影片的代理主键。
+
+title：电影的标题。
+
+description：电影的简短描述或情节总结。
+
+film_text表 的内容不应该直接修改。所有更改都应该在 film表格中进行。
+
+
+
+
+5.1.11清单表
+该inventory表包含给定商店中给定电影的每个副本的一行。
+
+该inventory表引用了 使用外键的表 film 和 store表引用的 rental 表。
+
+列
+inventory_id：用于唯一标识库存中每个项目的代理主键。
+
+film_id：指向此项目所代表的电影的外键。
+
+store_id：指向存放此项目的商店的外键。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.12语言表
+该language表是一个查找表，列出了电影可以使用的语言和原始语言值。
+
+该language表由该film 表引用 。
+
+列
+language_id：用于唯一标识每种语言的代理主键。
+
+name：语言的英文名称。
+
+last_update：行创建或最近更新的时间。
+
+
+5.1.13付款表
+该payment表格记录了客户所做的每项付款，并记录了所支付的金额和租金等信息（适用时）。
+
+该payment表是指 customer， rental和 staff 表。
+
+列
+payment_id：代理主键，用于唯一标识每笔付款。
+
+customer_id：付款正在被应用于其余额的客户。这是对customer表格的外键引用。
+
+staff_id：处理付款的工作人员。这是对staff表格的外键引用。
+
+rental_id：付款正在使用的租金。这是可选的，因为一些付款是用于未付费用的，并且可能不与租金直接相关。
+
+amount：付款金额。
+
+payment_date：付款处理的日期。
+
+last_update：行创建或最近更新的时间。
+
+
+
+
+5.1.14租赁表
+该rental表包含每个存货项目的每次出租的一行，其中包含关于谁租用了哪个项目，何时出租以及何时返回的信息。
+
+该rental表指的是 inventory， customer和 staff 表和由称为 payment 表。
+
+列
+rental_id：代理主键，唯一标识出租。
+
+rental_date：该项目出租的日期和时间。
+
+inventory_id：正在出租的物品。
+
+customer_id：客户租用物品。
+
+return_date：项目返回的日期和时间。
+
+staff_id：处理租赁的工作人员。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.15工作人员表
+该staff表列出了所有员工，包括电子邮件地址，登录信息和图片等信息。
+
+该staff表指的是 store 和 address 表使用外键，并且由称为 rental， payment和 store 表。
+
+列
+staff_id：唯一标识职员的代理主键。
+
+first_name：工作人员的名字。
+
+last_name：工作人员的姓氏。
+
+address_id：address表格中工作人员地址的外键。
+
+picture：BLOB 包含该员工的照片。
+
+email：工作人员的电子邮件地址。
+
+store_id：员工的 “ 家庭商店 ”。员工可以在其他商店工作，但通常分配到所列商店。
+
+active：这是否是一名活跃的员工。如果员工离开他们的行不从这个表中删除，而是将此列设置为 FALSE。
+
+username：工作人员用来访问租赁系统的用户名。
+
+password：工作人员用于访问租赁系统的密码。应该使用该SHA1()函数将密码存储为散列 。
+
+last_update：行创建或最近更新的时间。
+
+
+
+5.1.16商店表
+该store表列出了系统中的所有商店。所有库存都分配给特定商店，员工和客户被分配一个“ 家庭商店 ”。
+
+该store表指的是 staff 和 address 表使用外键和由称为 staff， customer和 inventory 表。
+
+列
+store_id：唯一标识商店的代理主键。
+
+manager_staff_id：标识该商店经理的外键。
+
+address_id：标识该商店地址的外键。
+
+last_update：行创建或最近更新的时间。
