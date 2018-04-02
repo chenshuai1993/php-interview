@@ -212,8 +212,3 @@ mysql> show profile for query 3;
     思路1：
       在索引上完成排序后的分页操作，最后根据主键关联回原表查询所需要的其他列内容
       eq: explain select a.file_id, a.desc from film a inner join (select film_id from film order by title limit 50,5) b on a.film_id = b.film_id;
-      
-      
-
-  
-
