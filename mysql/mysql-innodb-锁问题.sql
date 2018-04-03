@@ -75,7 +75,49 @@
     排它锁 (X) :select * from table where 1=1 .. for update;
 
 --例子
---一个session对一个数据行添加了 （lock in share mode)
+--一个session对一个数据行添加了 （lock in share mode) 👌
+                            --另一个session 可以查询该行记录，并且可以添加共享锁(lock in share mode)  ✅
+                            --另一个session 要会更新该行数据，添加排它锁( for update ) ❎
+
+--一个session对一个数据行添加了 （for update) 👌
+                            --另一个session 不可以查询该行记录，不可以添加共享锁(lock in share mode)  ❎
+                            --另一个session 要会更新该行数据，不可以添加排它锁( for update ) ❎
+
+
+--innodb 行锁实现方式
+    innodb 行锁是通过索引上的索引项加锁实现的， 如果没有索引，innodb将通过隐蔽的聚簇索引来对记录加锁， innodb 行锁分为3种形式
+
+    record lock：对索引加锁
+    gap lock: 对索引之间的“间隙”,第一条记录前的 “间隙” 或者最后一条的记录后的 “间隙”加锁
+    next-key lock： 前2种的组合，对记录及其前面的间隙加锁
+
+    innodb 这种行锁实现特点意味着：如果不通过索引条件检索数据，那么innosb将对表中所有的记录加锁， 实际效果跟表锁一样
+    --实际开发过程中,要特别注意 innodb 行锁的这一个特性，否则可能会导致大量的锁冲突，从而影响并发性能
+    --select * from table where id = 1  for update;  id记录没加锁，会全表锁定
+
+    --由于 mysql 的行锁，是针对索引加的锁， 不是针对记录加的锁，所以 虽然不是访问的同一行记录，但是，如果使用的相同的索引，那么会出现锁冲突的，设计的时候，应该注意下
+    -- ind idnex(id)
+    --select * from tabel where id = 1 and name='1' for update; --使用的 id 索引，
+    --select * from tabel where id = 1 and name='4' for update; --使用的相同过的 id 索引，会出现锁等待
+
+
+    表中有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，不论是使用主键索引，唯一索引，或者是普通索引， innodb 都会使用行锁来对数据加锁，
+    --select * from table where id = 1;    id 是索引
+    --数据    id = 1 ，name=1,  id = 1，name=4
+    --select * from tabel where name = 4;  name 是索引， 会出现锁等待
+
+
+    --如果索引项 出现了隐形类型转换， 那么 索引不会使用，会全表扫描，会全表索引
+
+
+    -- 
+
+
+
+
+
+
+
     
 
 
